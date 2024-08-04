@@ -1,6 +1,36 @@
 # Create an S3 bucket
 resource "aws_s3_bucket" "my_secure_bucket" {
-  bucket = "my-secure-bucket-name" # Change to your desired bucket name
+  bucket = "resume-challenge-bucket"
+}
+
+resource "aws_s3_bucket_acl" "my_secure_bucket" {
+  bucket = aws_s3_bucket.my_secure_bucket.id
+  acl    = "private"
+}
+
+# Enable versioning
+resource "aws_s3_bucket_versioning" "my_secure_bucket" {
+  bucket = aws_s3_bucket.my_secure_bucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+# Enable default encryption
+resource "aws_s3_bucket_server_side_encryption_configuration" "my_secure_bucket" {
+  bucket = aws_s3_bucket.my_secure_bucket.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+/*
+# Create an S3 bucket
+resource "aws_s3_bucket" "my_secure_bucket" {
+  bucket = "resume-challenge-bucket"
   acl    = "private"
 
   # Enable versioning
@@ -17,6 +47,7 @@ resource "aws_s3_bucket" "my_secure_bucket" {
     }
   }
 }
+*/
 
 # Create an S3 bucket policy to restrict access to all principals in a given account
 resource "aws_s3_bucket_policy" "my_secure_bucket_policy" {
