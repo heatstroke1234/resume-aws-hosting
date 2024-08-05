@@ -23,13 +23,17 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "nickvenky123_resu
   }
 }
 
+resource "aws_cloudfront_origin_access_identity" "nickvenky123_resume" {
+  comment = "nickvenky123_resume"
+}
+
 
 resource "aws_s3_bucket_public_access_block" "nickvenky123_resume_bucket_access_block" {
   bucket = aws_s3_bucket.nickvenky123_resume_bucket.id
 
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
   restrict_public_buckets = false
 }
 
@@ -75,6 +79,7 @@ resource "aws_s3_bucket_policy" "nickvenky123_resume_bucket_policy" {
 }
 */
 
+/*
 # Host website
 resource "aws_s3_bucket_website_configuration" "hosting" {
   bucket = aws_s3_bucket.nickvenky123_resume_bucket.id
@@ -87,6 +92,7 @@ resource "aws_s3_bucket_website_configuration" "hosting" {
     key = "404.html"
   }
 }
+*/
 
 
 # Enable CloudFront
@@ -95,10 +101,15 @@ resource "aws_cloudfront_distribution" "distribution" {
   is_ipv6_enabled = true
 
   origin {
+    /*
     domain_name = aws_s3_bucket_website_configuration.hosting.website_endpoint
     origin_id   = aws_s3_bucket.nickvenky123_resume_bucket.bucket_regional_domain_name
+    */
 
-    custom_origin_config {
+    domain_name = aws_s3_bucket.nickvenky123_resume_bucket.bucket_regional_domain_name
+    origin_id   = aws_s3_bucket.nickvenky123_resume_bucket.bucket_regional_domain_name
+
+    /*custom_origin_config {
       http_port                = 80
       https_port               = 443
       origin_keepalive_timeout = 5
@@ -107,6 +118,10 @@ resource "aws_cloudfront_distribution" "distribution" {
       origin_ssl_protocols = [
         "TLSv1.2",
       ]
+    } */
+
+    s3_origin_config {
+      origin_access_identity = aws_cloudfront_origin_access_identity.nickvenky123_resume.cloudfront_access_identity_path
     }
   }
 
