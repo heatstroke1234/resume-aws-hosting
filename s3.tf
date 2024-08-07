@@ -99,6 +99,7 @@ resource "aws_s3_bucket_website_configuration" "hosting" {
 resource "aws_cloudfront_distribution" "distribution" {
   enabled         = true
   is_ipv6_enabled = true
+  default_root_object = "index.html"
 
   origin {
     /*
@@ -143,6 +144,10 @@ resource "aws_cloudfront_distribution" "distribution" {
     allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods         = ["GET", "HEAD"]
     target_origin_id       = aws_s3_bucket.nickvenky123_resume_bucket.bucket_regional_domain_name
+
+    min_ttl                = 0
+    default_ttl            = 3600
+    max_ttl                = 86400
   }
 }
 
