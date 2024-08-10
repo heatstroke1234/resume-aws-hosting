@@ -27,7 +27,7 @@ resource "aws_cloudfront_origin_access_identity" "nickvenky123_resume" {
   comment = "nickvenky123_resume"
 }
 
-
+# Establish bucket policy
 resource "aws_s3_bucket_public_access_block" "nickvenky123_resume_bucket_access_block" {
   bucket = aws_s3_bucket.nickvenky123_resume_bucket.id
 
