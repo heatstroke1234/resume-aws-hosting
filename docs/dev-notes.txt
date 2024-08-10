@@ -1,0 +1,30 @@
+Why AWS?
+- AWS Resume Challenge, outlined certification and how to host the site
+- interested in the cloud, this gave me an excuse to really get into it
+How did you make the acc?
+- Parents had an inactive acc that I just took over
+How to log in?
+- IAM user setup (setup as admin)
+- CLI and Terraform afterward
+- Needed a way to log in to AWS w/o static credentials
+    - access key and secret key are not secure b/c they are permanent and anyone who accesses your computer can easily steal it and use it to access your acc
+- AWS SSO was needed, enable Identity Center for the acc, which creates the startup url
+- Created SSO user by providing email
+- Now can set up SSO user just by using command line (assuming aws cli is installed locally)
+- “aws sso login” command will do the job
+Why CLI + terraform?
+- everything is saved in code, can be recreated easily (reproducable)
+- Route 53
+    - bought domain name for abt $15
+    - AWS automatically created hosted zone plus two “sample” records that didn’t serve my purposes
+    - first configured IPV4 and IPV6 connections
+        - Configured A (IPV4) and AAAA (IPV6) records, w/ alias routing traffic to my CloudFront distribution
+    - configured this, but still got a 403 error (configured cloudfront to be https only)
+        - googled, and realized I needed an certificate for my website specifically
+        - configured in CloudFront, set alternate domain name to my website name
+        - this setting required certificate, so went to ACM to get certificate
+        - attached certificate to setting, and applied settings
+        - stuck in “pending validation”, so needed to create DNS record to validate certificate
+            - AWS requires certificate validation b/c they are a certificate authority themselves
+        - option in ACM to automatically create, so I clicked it, and it happpened
+        - tried website, and it worked
